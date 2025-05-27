@@ -831,6 +831,7 @@ class darkemu_x_hod(base_class):
 
         poff = self.gparams["poff"]
         Roff = self.gparams["Roff"]
+        Ncen_mat = np.tile(self.Ncen, (len(self.fftlog_1h.k), 1)).transpose()
 
         Hc_1h_over_Ncen = 1./self.ng * \
             (1. - poff + poff*np.exp(-0.5*self.k_1h_mat**2*(Roff*self.R200_mat)**2))
@@ -838,7 +839,7 @@ class darkemu_x_hod(base_class):
         Hs_1h = Nsat_mat/self.ng*self.p_hm_dist_1h
 
         self.p_1hcs = self.do_integration(
-            Hc_1h_over_Ncen*Hs_1h*self.dndM_mat*self.Mh_mat, axis=0, dx=self.dlogMh)
+            Hc_1h_over_Ncen*Ncen_mat*Hs_1h*self.dndM_mat*self.Mh_mat, axis=0, dx=self.dlogMh)
 
     def _compute_p_1hss(self, redshift):
         if self.logdens_computed == False:
@@ -858,7 +859,7 @@ class darkemu_x_hod(base_class):
         lambda_1h_mat = lambda_sat_mat/self.ng*self.p_hm_dist_1h
 
         self.p_1hss = self.do_integration(
-            lambda_1h_mat*lambda_1h_mat*Ncen_mat*self.dndM_mat*self.Mh_mat, axis=0, dx=self.dlogMh)
+            lambda_1h_mat*lambda_1h_mat*Ncen_mat*Ncen_mat*self.dndM_mat*self.Mh_mat, axis=0, dx=self.dlogMh)
 
     def _compute_p_2hcc(self, redshift):
         if self.logdens_computed == False:
